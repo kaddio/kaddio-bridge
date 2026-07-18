@@ -52,8 +52,3 @@ Start-ScheduledTask -TaskName $TaskName
 Write-Host ""
 Write-Host "Installation complete!"
 Write-Host "Config: $InstallDir\config.json"
-Write-Host ""
-Write-Host "Usage:"
-Write-Host "  $InstallDir\$BinaryName           # Start server"
-Write-Host "  $InstallDir\$BinaryName token     # Show auth token"
-Write-Host "  $InstallDir\$BinaryName version   # Show version"

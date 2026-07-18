@@ -73,14 +73,7 @@ See `scripts/install.sh` (macOS/Linux) and `scripts/install.ps1` (Windows).
 ## Usage
 
 ```bash
-# Start the server
 ./kaddio-bridge
-
-# Show the auth token
-./kaddio-bridge token
-
-# Show version
-./kaddio-bridge version
 ```
 
 On first run, Kaddio Bridge creates a config file with a generated auth token:
@@ -113,10 +106,6 @@ curl http://127.0.0.1:38471/api/v1/status
 Requires `Authorization: Bearer <token>` header.
 
 ```bash
-# Get your token
-./kaddio-bridge token
-
-# Launch an application
 curl -X POST http://127.0.0.1:38471/api/v1/process \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \

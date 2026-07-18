@@ -151,14 +151,11 @@ echo ""
 echo "Installation complete!"
 echo ""
 
-# Ensure config file exists (creates it if first run)
-"$BIN_DIR/$BINARY_NAME" token > /dev/null 2>&1 || true
+# Ensure config file exists (creates it on first start)
+"$BIN_DIR/$BINARY_NAME" > /dev/null 2>&1 &
+sleep 1
+kill %1 2>/dev/null || true
 
 echo "Config file: $CONFIG_DIR/config.json"
 echo ""
 cat "$CONFIG_DIR/config.json"
-echo ""
-echo "Usage:"
-echo "  $BINARY_NAME           # Start server"
-echo "  $BINARY_NAME token     # Show auth token"
-echo "  $BINARY_NAME version   # Show version"
