@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION="${VERSION:-latest}"
 CONFIG_DIR="$HOME/Library/Application Support/kaddio-bridge"
 BIN_DIR="$HOME/.local/bin"
 PLIST_DIR="$HOME/Library/LaunchAgents"
@@ -17,11 +16,6 @@ require_command() {
 }
 
 resolve_version() {
-    if [ "$VERSION" != "latest" ]; then
-        echo "$VERSION"
-        return
-    fi
-
     local latest_url
     latest_url="$(curl -fsSIL -o /dev/null -w '%{url_effective}' "${REPO_URL}/releases/latest")"
     local latest_tag

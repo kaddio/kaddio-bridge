@@ -30,12 +30,6 @@ macOS/Linux:
 curl -fsSL https://raw.githubusercontent.com/kaddio/kaddio-bridge/main/scripts/install.sh | bash
 ```
 
-Install a specific version:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/kaddio/kaddio-bridge/main/scripts/install.sh | VERSION=0.1.0 bash
-```
-
 The installer:
 
 - Downloads the release binary for your OS/architecture
