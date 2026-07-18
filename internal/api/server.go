@@ -13,7 +13,7 @@ import (
 	"locallaunch/internal/process"
 )
 
-const version = "0.1.1"
+const version = "0.1.5"
 
 type Server struct {
 	cfg    *config.Config
@@ -32,10 +32,26 @@ func New(cfg *config.Config) *Server {
 
 	s.server = &http.Server{
 		Addr:    cfg.Address,
-		Handler: s.mux,
+		Handler: s.withCORS(s.mux),
 	}
 
 	return s
+}
+
+func (s *Server) withCORS(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		w.Header().Set("Access-Control-Max-Age", "86400")
+
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
 }
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
