@@ -155,10 +155,14 @@ fi
 
 echo ""
 echo "Installation complete!"
-echo "Config: $CONFIG_DIR/config.json"
 echo ""
-echo "Your API token:"
-echo "  $("$BIN_DIR/$BINARY_NAME" token)"
+
+# Ensure config file exists (creates it if first run)
+"$BIN_DIR/$BINARY_NAME" token > /dev/null 2>&1 || true
+
+echo "Config file: $CONFIG_DIR/config.json"
+echo ""
+cat "$CONFIG_DIR/config.json"
 echo ""
 echo "Usage:"
 echo "  $BINARY_NAME           # Start server"
