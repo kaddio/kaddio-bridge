@@ -13,7 +13,7 @@ import (
 	"kaddio-bridge/internal/process"
 )
 
-const version = "0.1.6"
+const version = "0.1.8"
 
 type Server struct {
 	cfg    *config.Config
