@@ -1,4 +1,5 @@
 $ErrorActionPreference = "Stop"
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
 $InstallDir = "$env:APPDATA\kaddio-bridge"
 $BinaryName = "kaddio-bridge.exe"

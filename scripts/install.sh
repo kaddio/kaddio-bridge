@@ -71,14 +71,34 @@ mkdir -p "$CONFIG_DIR"
 
 if [ ! -d "$BIN_DIR" ]; then
     mkdir -p "$BIN_DIR"
-    case ":$PATH:" in
-        *":$BIN_DIR:"*) ;;
-        *) echo ""
-           echo "NOTE: $BIN_DIR is not in your PATH."
-           echo "Add this to your shell profile:"
-           echo "  export PATH=\"$BIN_DIR:\$PATH\"" ;;
-    esac
 fi
+
+# Add BIN_DIR to PATH if not already present
+case ":$PATH:" in
+    *":$BIN_DIR:"*) ;;
+    *)
+        PROFILE=""
+        if [ "$SHELL" = "/bin/zsh" ] || [ "$SHELL" = "/usr/bin/zsh" ]; then
+            PROFILE="$HOME/.zshrc"
+        elif [ "$SHELL" = "/bin/bash" ] || [ "$SHELL" = "/usr/bin/bash" ]; then
+            PROFILE="$HOME/.bashrc"
+        else
+            PROFILE="$HOME/.profile"
+        fi
+
+        # Create profile if it doesn't exist
+        touch "$PROFILE"
+
+        if ! grep -q "$BIN_DIR" "$PROFILE" 2>/dev/null; then
+            echo "" >> "$PROFILE"
+            echo "# Added by kaddio-bridge installer" >> "$PROFILE"
+            echo "export PATH=\"\$HOME/.local/bin:\$PATH\"" >> "$PROFILE"
+            echo "Added $BIN_DIR to PATH in $PROFILE"
+        fi
+
+        export PATH="$BIN_DIR:$PATH"
+        ;;
+esac
 
 BINARY_URL="${REPO_URL}/releases/download/v${INSTALL_VERSION}/kaddio-bridge-${OS}-${ARCH}"
 
@@ -157,6 +177,7 @@ EOF
 
     systemctl --user daemon-reload
     systemctl --user enable --now kaddio-bridge.service
+    loginctl enable-linger "$(whoami)" 2>/dev/null || true
     echo "Systemd user service installed and started."
 fi
 
