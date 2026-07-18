@@ -2,12 +2,12 @@
 set -euo pipefail
 
 VERSION="${VERSION:-latest}"
-CONFIG_DIR="$HOME/Library/Application Support/locallaunch"
+CONFIG_DIR="$HOME/Library/Application Support/kaddio-bridge"
 BIN_DIR="$HOME/.local/bin"
 PLIST_DIR="$HOME/Library/LaunchAgents"
-PLIST_NAME="com.locallaunch.plist"
-BINARY_NAME="locallaunch"
-REPO_URL="https://github.com/rhymn/locallaunch"
+PLIST_NAME="com.kaddio-bridge.plist"
+BINARY_NAME="kaddio-bridge"
+REPO_URL="https://github.com/kaddio/kaddio-bridge"
 
 require_command() {
     if ! command -v "$1" >/dev/null 2>&1; then
@@ -65,13 +65,13 @@ if [ "$ARCH" = "unsupported" ]; then
 fi
 
 if [ "$OS" = "linux" ]; then
-    CONFIG_DIR="$HOME/.config/locallaunch"
+    CONFIG_DIR="$HOME/.config/kaddio-bridge"
 fi
 
 require_command curl
 INSTALL_VERSION="$(resolve_version)"
 
-echo "Installing LocalLaunch v${INSTALL_VERSION} (${OS}/${ARCH})..."
+echo "Installing Kaddio Bridge v${INSTALL_VERSION} (${OS}/${ARCH})..."
 
 mkdir -p "$CONFIG_DIR"
 
@@ -86,7 +86,7 @@ if [ ! -d "$BIN_DIR" ]; then
     esac
 fi
 
-BINARY_URL="${REPO_URL}/releases/download/v${INSTALL_VERSION}/locallaunch-${OS}-${ARCH}"
+BINARY_URL="${REPO_URL}/releases/download/v${INSTALL_VERSION}/kaddio-bridge-${OS}-${ARCH}"
 
 TMP_DIR="$(mktemp -d)"
 trap 'rm -rf "$TMP_DIR"' EXIT
@@ -107,7 +107,7 @@ if [ "$OS" = "darwin" ]; then
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.locallaunch</string>
+    <string>com.kaddio-bridge</string>
     <key>ProgramArguments</key>
     <array>
         <string>${BIN_DIR}/${BINARY_NAME}</string>
@@ -117,25 +117,25 @@ if [ "$OS" = "darwin" ]; then
     <key>KeepAlive</key>
     <true/>
     <key>StandardOutPath</key>
-    <string>${HOME}/Library/Logs/locallaunch.log</string>
+    <string>${HOME}/Library/Logs/kaddio-bridge.log</string>
     <key>StandardErrorPath</key>
-    <string>${HOME}/Library/Logs/locallaunch.log</string>
+    <string>${HOME}/Library/Logs/kaddio-bridge.log</string>
 </dict>
 </plist>
 EOF
 
-    launchctl bootout "gui/$(id -u)/com.locallaunch" 2>/dev/null || true
+    launchctl bootout "gui/$(id -u)/com.kaddio-bridge" 2>/dev/null || true
     launchctl bootstrap "gui/$(id -u)" "$PLIST_DIR/$PLIST_NAME"
-    launchctl enable "gui/$(id -u)/com.locallaunch"
-    launchctl kickstart -k "gui/$(id -u)/com.locallaunch"
+    launchctl enable "gui/$(id -u)/com.kaddio-bridge"
+    launchctl kickstart -k "gui/$(id -u)/com.kaddio-bridge"
     echo "LaunchAgent installed and started."
 elif [ "$OS" = "linux" ]; then
     require_command systemctl
     SERVICE_DIR="$HOME/.config/systemd/user"
     mkdir -p "$SERVICE_DIR"
-    cat > "$SERVICE_DIR/locallaunch.service" <<EOF
+    cat > "$SERVICE_DIR/kaddio-bridge.service" <<EOF
 [Unit]
-Description=LocalLaunch Process Launcher
+Description=Kaddio Bridge Process Launcher
 After=network.target
 
 [Service]
@@ -149,7 +149,7 @@ WantedBy=default.target
 EOF
 
     systemctl --user daemon-reload
-    systemctl --user enable --now locallaunch.service
+    systemctl --user enable --now kaddio-bridge.service
     echo "Systemd user service installed and started."
 fi
 

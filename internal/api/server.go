@@ -8,9 +8,9 @@ import (
 	"net/http"
 	"strings"
 
-	"locallaunch/internal/auth"
-	"locallaunch/internal/config"
-	"locallaunch/internal/process"
+	"kaddio-bridge/internal/auth"
+	"kaddio-bridge/internal/config"
+	"kaddio-bridge/internal/process"
 )
 
 const version = "0.1.6"

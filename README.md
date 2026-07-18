@@ -1,8 +1,8 @@
-# LocalLaunch
+# Kaddio Bridge
 
 Open-source, cross-platform local process launcher with a secure localhost HTTP API.
 
-LocalLaunch lets trusted web applications start arbitrary locally installed applications through a simple HTTP API running on `127.0.0.1`.
+Kaddio Bridge lets trusted web applications start arbitrary locally installed applications through a simple HTTP API running on `127.0.0.1`.
 
 ## How It Works
 
@@ -11,14 +11,14 @@ Browser Web App
     |
     | HTTP localhost API
     |
-LocalLaunch
+Kaddio Bridge
     |
     | os process execution
     |
 Any local executable
 ```
 
-LocalLaunch does not know about applications. It receives an executable path, arguments, and optional working directory, then starts the process.
+Kaddio Bridge does not know about applications. It receives an executable path, arguments, and optional working directory, then starts the process.
 
 ## Install
 
@@ -27,49 +27,49 @@ LocalLaunch does not know about applications. It receives an executable path, ar
 macOS/Linux:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/rhymn/locallaunch/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/kaddio/kaddio-bridge/main/scripts/install.sh | bash
 ```
 
 Install a specific version:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/rhymn/locallaunch/main/scripts/install.sh | VERSION=0.1.0 bash
+curl -fsSL https://raw.githubusercontent.com/kaddio/kaddio-bridge/main/scripts/install.sh | VERSION=0.1.0 bash
 ```
 
 The installer:
 
 - Downloads the release binary for your OS/architecture
 - Installs it to a user-local location
-- Registers LocalLaunch as a background service that starts automatically after restart/login
+- Registers Kaddio Bridge as a background service that starts automatically after restart/login
 
 ### Windows (PowerShell)
 
 ```powershell
-iwr -useb https://raw.githubusercontent.com/rhymn/locallaunch/main/scripts/install.ps1 | iex
+iwr -useb https://raw.githubusercontent.com/kaddio/kaddio-bridge/main/scripts/install.ps1 | iex
 ```
 
 ### From source
 
 ```bash
-git clone https://github.com/rhymn/locallaunch.git
-cd locallaunch
-go build ./cmd/locallaunch
+git clone https://github.com/kaddio/kaddio-bridge.git
+cd kaddio-bridge
+go build ./cmd/kaddio-bridge
 ```
 
 ### Cross-compile
 
 ```bash
 # macOS Apple Silicon
-GOOS=darwin GOARCH=arm64 go build -o locallaunch ./cmd/locallaunch
+GOOS=darwin GOARCH=arm64 go build -o kaddio-bridge ./cmd/kaddio-bridge
 
 # macOS Intel
-GOOS=darwin GOARCH=amd64 go build -o locallaunch ./cmd/locallaunch
+GOOS=darwin GOARCH=amd64 go build -o kaddio-bridge ./cmd/kaddio-bridge
 
 # Windows
-GOOS=windows GOARCH=amd64 go build -o locallaunch.exe ./cmd/locallaunch
+GOOS=windows GOARCH=amd64 go build -o kaddio-bridge.exe ./cmd/kaddio-bridge
 
 # Linux
-GOOS=linux GOARCH=amd64 go build -o locallaunch ./cmd/locallaunch
+GOOS=linux GOARCH=amd64 go build -o kaddio-bridge ./cmd/kaddio-bridge
 ```
 
 ### Install scripts
@@ -80,20 +80,20 @@ See `scripts/install.sh` (macOS/Linux) and `scripts/install.ps1` (Windows).
 
 ```bash
 # Start the server
-./locallaunch
+./kaddio-bridge
 
 # Show the auth token
-./locallaunch token
+./kaddio-bridge token
 
 # Show version
-./locallaunch version
+./kaddio-bridge version
 ```
 
-On first run, LocalLaunch creates a config file with a generated auth token:
+On first run, Kaddio Bridge creates a config file with a generated auth token:
 
-- macOS: `~/Library/Application Support/locallaunch/config.json`
-- Linux: `~/.config/locallaunch/config.json`
-- Windows: `%APPDATA%\locallaunch\config.json`
+- macOS: `~/Library/Application Support/kaddio-bridge/config.json`
+- Linux: `~/.config/kaddio-bridge/config.json`
+- Windows: `%APPDATA%\kaddio-bridge\config.json`
 
 ## API
 
@@ -120,7 +120,7 @@ Requires `Authorization: Bearer <token>` header.
 
 ```bash
 # Get your token
-./locallaunch token
+./kaddio-bridge token
 
 # Launch an application
 curl -X POST http://127.0.0.1:38471/api/v1/process \

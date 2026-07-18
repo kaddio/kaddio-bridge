@@ -7,13 +7,13 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"locallaunch/internal/auth"
+	"kaddio-bridge/internal/auth"
 )
 
 const (
 	dirPermissions  = 0700
 	filePermissions = 0600
-	appName         = "locallaunch"
+	appName         = "kaddio-bridge"
 	configFile      = "config.json"
 	defaultAddress  = "127.0.0.1:38471"
 )
@@ -24,7 +24,7 @@ type Config struct {
 }
 
 func Dir() (string, error) {
-	if override := os.Getenv("LOCALLAUNCH_CONFIG_DIR"); override != "" {
+	if override := os.Getenv("KADDIO_BRIDGE_CONFIG_DIR"); override != "" {
 		return override, nil
 	}
 

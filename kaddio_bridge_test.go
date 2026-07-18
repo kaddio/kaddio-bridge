@@ -1,4 +1,4 @@
-package locallaunch_test
+package kaddio_bridge_test
 
 import (
 	"encoding/json"
@@ -9,10 +9,10 @@ import (
 	"strings"
 	"testing"
 
-	"locallaunch/internal/api"
-	"locallaunch/internal/auth"
-	"locallaunch/internal/config"
-	"locallaunch/internal/process"
+	"kaddio-bridge/internal/api"
+	"kaddio-bridge/internal/auth"
+	"kaddio-bridge/internal/config"
+	"kaddio-bridge/internal/process"
 )
 
 func TestTokenGeneration(t *testing.T) {
@@ -57,8 +57,8 @@ func TestTokenValidation(t *testing.T) {
 func TestConfigCreation(t *testing.T) {
 	dir := t.TempDir()
 
-	os.Setenv("LOCALLAUNCH_CONFIG_DIR", dir)
-	defer os.Unsetenv("LOCALLAUNCH_CONFIG_DIR")
+	os.Setenv("KADDIO_BRIDGE_CONFIG_DIR", dir)
+	defer os.Unsetenv("KADDIO_BRIDGE_CONFIG_DIR")
 
 	cfg, err := config.Load()
 	if err != nil {
@@ -100,8 +100,8 @@ func TestConfigCreation(t *testing.T) {
 func TestConfigLoadExisting(t *testing.T) {
 	dir := t.TempDir()
 
-	os.Setenv("LOCALLAUNCH_CONFIG_DIR", dir)
-	defer os.Unsetenv("LOCALLAUNCH_CONFIG_DIR")
+	os.Setenv("KADDIO_BRIDGE_CONFIG_DIR", dir)
+	defer os.Unsetenv("KADDIO_BRIDGE_CONFIG_DIR")
 
 	cfg1, err := config.Load()
 	if err != nil {
@@ -124,8 +124,8 @@ func TestConfigLoadExisting(t *testing.T) {
 
 func TestStatusEndpoint(t *testing.T) {
 	dir := t.TempDir()
-	os.Setenv("LOCALLAUNCH_CONFIG_DIR", dir)
-	defer os.Unsetenv("LOCALLAUNCH_CONFIG_DIR")
+	os.Setenv("KADDIO_BRIDGE_CONFIG_DIR", dir)
+	defer os.Unsetenv("KADDIO_BRIDGE_CONFIG_DIR")
 
 	cfg, _ := config.Load()
 	srv := api.New(cfg)
@@ -155,8 +155,8 @@ func TestStatusEndpoint(t *testing.T) {
 
 func TestPingEndpointUnauthorized(t *testing.T) {
 	dir := t.TempDir()
-	os.Setenv("LOCALLAUNCH_CONFIG_DIR", dir)
-	defer os.Unsetenv("LOCALLAUNCH_CONFIG_DIR")
+	os.Setenv("KADDIO_BRIDGE_CONFIG_DIR", dir)
+	defer os.Unsetenv("KADDIO_BRIDGE_CONFIG_DIR")
 
 	cfg, _ := config.Load()
 	srv := api.New(cfg)
@@ -173,8 +173,8 @@ func TestPingEndpointUnauthorized(t *testing.T) {
 
 func TestPingEndpointAuthorized(t *testing.T) {
 	dir := t.TempDir()
-	os.Setenv("LOCALLAUNCH_CONFIG_DIR", dir)
-	defer os.Unsetenv("LOCALLAUNCH_CONFIG_DIR")
+	os.Setenv("KADDIO_BRIDGE_CONFIG_DIR", dir)
+	defer os.Unsetenv("KADDIO_BRIDGE_CONFIG_DIR")
 
 	cfg, _ := config.Load()
 	srv := api.New(cfg)
@@ -205,8 +205,8 @@ func TestPingEndpointAuthorized(t *testing.T) {
 
 func TestProcessEndpointUnauthorized(t *testing.T) {
 	dir := t.TempDir()
-	os.Setenv("LOCALLAUNCH_CONFIG_DIR", dir)
-	defer os.Unsetenv("LOCALLAUNCH_CONFIG_DIR")
+	os.Setenv("KADDIO_BRIDGE_CONFIG_DIR", dir)
+	defer os.Unsetenv("KADDIO_BRIDGE_CONFIG_DIR")
 
 	cfg, _ := config.Load()
 	srv := api.New(cfg)
@@ -224,8 +224,8 @@ func TestProcessEndpointUnauthorized(t *testing.T) {
 
 func TestProcessEndpointBadToken(t *testing.T) {
 	dir := t.TempDir()
-	os.Setenv("LOCALLAUNCH_CONFIG_DIR", dir)
-	defer os.Unsetenv("LOCALLAUNCH_CONFIG_DIR")
+	os.Setenv("KADDIO_BRIDGE_CONFIG_DIR", dir)
+	defer os.Unsetenv("KADDIO_BRIDGE_CONFIG_DIR")
 
 	cfg, _ := config.Load()
 	srv := api.New(cfg)
@@ -244,8 +244,8 @@ func TestProcessEndpointBadToken(t *testing.T) {
 
 func TestProcessEndpointBadJSON(t *testing.T) {
 	dir := t.TempDir()
-	os.Setenv("LOCALLAUNCH_CONFIG_DIR", dir)
-	defer os.Unsetenv("LOCALLAUNCH_CONFIG_DIR")
+	os.Setenv("KADDIO_BRIDGE_CONFIG_DIR", dir)
+	defer os.Unsetenv("KADDIO_BRIDGE_CONFIG_DIR")
 
 	cfg, _ := config.Load()
 	srv := api.New(cfg)
@@ -270,8 +270,8 @@ func TestProcessEndpointBadJSON(t *testing.T) {
 
 func TestProcessEndpointInvalidPath(t *testing.T) {
 	dir := t.TempDir()
-	os.Setenv("LOCALLAUNCH_CONFIG_DIR", dir)
-	defer os.Unsetenv("LOCALLAUNCH_CONFIG_DIR")
+	os.Setenv("KADDIO_BRIDGE_CONFIG_DIR", dir)
+	defer os.Unsetenv("KADDIO_BRIDGE_CONFIG_DIR")
 
 	cfg, _ := config.Load()
 	srv := api.New(cfg)

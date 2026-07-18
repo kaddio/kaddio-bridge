@@ -5,8 +5,8 @@ import (
 	"log"
 	"os"
 
-	"locallaunch/internal/api"
-	"locallaunch/internal/config"
+	"kaddio-bridge/internal/api"
+	"kaddio-bridge/internal/config"
 )
 
 const version = "0.1.5"
@@ -15,7 +15,7 @@ func main() {
 	if len(os.Args) > 1 {
 		switch os.Args[1] {
 		case "version":
-			fmt.Printf("locallaunch %s\n", version)
+			fmt.Printf("kaddio-bridge %s\n", version)
 			return
 		case "token":
 			cfg, err := config.Load()
@@ -26,7 +26,7 @@ func main() {
 			return
 		default:
 			fmt.Fprintf(os.Stderr, "Unknown command: %s\n", os.Args[1])
-			fmt.Fprintf(os.Stderr, "Usage: locallaunch [version|token]\n")
+			fmt.Fprintf(os.Stderr, "Usage: kaddio-bridge [version|token]\n")
 			os.Exit(1)
 		}
 	}
@@ -37,7 +37,7 @@ func main() {
 	}
 
 	cfgPath, _ := config.Dir()
-	log.Printf("LocalLaunch started\n\nConfig:\n%s/config.json\n\nToken:\n%s\n\n", cfgPath, cfg.Token)
+	log.Printf("Kaddio Bridge started\n\nConfig:\n%s/config.json\n\nToken:\n%s\n\n", cfgPath, cfg.Token)
 
 	srv := api.New(cfg)
 	if err := srv.ListenAndServe(); err != nil {
