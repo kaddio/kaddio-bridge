@@ -2,6 +2,8 @@ package kaddio_bridge_test
 
 import (
 	"encoding/json"
+	"fmt"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -292,6 +294,121 @@ func TestProcessEndpointInvalidPath(t *testing.T) {
 
 	if resp["started"] != false {
 		t.Errorf("started = %v, want false", resp["started"])
+	}
+}
+
+func TestProcessEndpointValidLaunch(t *testing.T) {
+	dir := t.TempDir()
+	os.Setenv("KADDIO_BRIDGE_CONFIG_DIR", dir)
+	defer os.Unsetenv("KADDIO_BRIDGE_CONFIG_DIR")
+
+	cfg, _ := config.Load()
+	srv := api.New(cfg)
+
+	body := `{"path":"/bin/echo","args":["kaddio-bridge-test"]}`
+	req := httptest.NewRequest(http.MethodPost, "/api/v1/process", strings.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+cfg.Token)
+	w := httptest.NewRecorder()
+
+	srv.ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("status = %d, want %d", w.Code, http.StatusOK)
+	}
+
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode error: %v", err)
+	}
+
+	if resp["started"] != true {
+		t.Errorf("started = %v, want true", resp["started"])
+	}
+
+	pid, ok := resp["pid"].(float64)
+	if !ok || pid <= 0 {
+		t.Errorf("pid = %v, want positive number", resp["pid"])
+	}
+}
+
+func TestProcessEndpointBodyTooLarge(t *testing.T) {
+	dir := t.TempDir()
+	os.Setenv("KADDIO_BRIDGE_CONFIG_DIR", dir)
+	defer os.Unsetenv("KADDIO_BRIDGE_CONFIG_DIR")
+
+	cfg, _ := config.Load()
+	srv := api.New(cfg)
+
+	largePath := strings.Repeat("a", 1<<20+100) // over 1MB
+	largeBody := fmt.Sprintf(`{"path":"/%s","args":[]}`, largePath)
+	req := httptest.NewRequest(http.MethodPost, "/api/v1/process", strings.NewReader(largeBody))
+	req.Header.Set("Authorization", "Bearer "+cfg.Token)
+	w := httptest.NewRecorder()
+
+	srv.ServeHTTP(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("status = %d, want %d", w.Code, http.StatusBadRequest)
+	}
+
+	var resp map[string]interface{}
+	json.NewDecoder(w.Body).Decode(&resp)
+
+	if resp["started"] != false {
+		t.Errorf("started = %v, want false", resp["started"])
+	}
+
+	errMsg, _ := resp["error"].(string)
+	if !strings.Contains(errMsg, "too large") {
+		t.Errorf("error = %q, want it to contain 'too large'", errMsg)
+	}
+}
+
+func TestCORSPreflight(t *testing.T) {
+	dir := t.TempDir()
+	os.Setenv("KADDIO_BRIDGE_CONFIG_DIR", dir)
+	defer os.Unsetenv("KADDIO_BRIDGE_CONFIG_DIR")
+
+	cfg, _ := config.Load()
+	srv := api.New(cfg)
+
+	ln, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer ln.Close()
+
+	go srv.Serve(ln)
+
+	resp, err := http.Head(fmt.Sprintf("http://%s/api/v1/process", ln.Addr().String()))
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp.Body.Close()
+
+	// Verify CORS headers are set on normal requests
+	if resp.Header.Get("Access-Control-Allow-Origin") != "*" {
+		t.Errorf("CORS origin = %q, want %q", resp.Header.Get("Access-Control-Allow-Origin"), "*")
+	}
+
+	if !strings.Contains(resp.Header.Get("Access-Control-Allow-Methods"), "POST") {
+		t.Errorf("CORS methods = %q, want it to contain POST", resp.Header.Get("Access-Control-Allow-Methods"))
+	}
+
+	if resp.Header.Get("Access-Control-Allow-Headers") == "" {
+		t.Error("CORS headers should not be empty")
+	}
+
+	// Verify OPTIONS returns 204 with CORS headers
+	req, _ := http.NewRequest("OPTIONS", fmt.Sprintf("http://%s/api/v1/process", ln.Addr().String()), nil)
+	optsResp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	optsResp.Body.Close()
+
+	if optsResp.StatusCode != http.StatusNoContent {
+		t.Errorf("OPTIONS status = %d, want %d", optsResp.StatusCode, http.StatusNoContent)
 	}
 }
 
